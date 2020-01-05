@@ -33,6 +33,15 @@ const InputExamples = () => {
   const [label, setlabel] = useState(labelInitState);
   const helpTextInitState = 'Some valuable intel on how to populate the field';
   const [helpText, sethelpText] = useState(helpTextInitState);
+  const [alignItems, setAlignItems] = useState();
+  const toggleAlignItems = () => alignItems ? setAlignItems() : setAlignItems('flex-start');
+  const flexStyle = () => {
+    const base = { border: inputWidthDemoStyle.border, flexDirection: 'column' };
+    if (alignItems) {
+      return { ...base, alignItems };
+    }
+    return base;
+  };
   return (
     <>
       <Input
@@ -179,9 +188,10 @@ const InputExamples = () => {
       <p id="style">
         If you prefer to be more explicit about things, just override with the <Badge text="style" /> prop
         <br />Understand that the <b>style</b> object will only be applied to the main wrapper (hence the separate <Badge text="inputWidth" /> prop)
+        <br />It's just flexbox under the hood: <button onClick={toggleAlignItems}>Click me!</button>
       </p>
-      <DemoBox><Input inputWidth="25%" style={{ border: inputWidthDemoStyle.border, flexDirection: 'column' }} /></DemoBox>
-      <p>Now since the inner input field defaults to 100% of its parent, styling the main wrapper can be enough:</p>
+      <DemoBox><Input inputWidth="25%" style={flexStyle()} /></DemoBox>
+      <p>Now since the inner input field defaults to 100% of its parent, styling the main wrapper should be enough in most cases:</p>
       <DemoBox><Input style={inputWidthDemoStyle} /></DemoBox>
       <p>By default the label is centered vertically with the inner input field. If the helpText gets too long...</p>
       <DemoBox>
