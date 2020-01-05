@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/johanfive/dummies/issues"
   },
-  "homepage": "https://github.com/johanfive/dummies#readme",
+  "homepage": "https://johanfive.github.io/dummies",
   "devDependencies": {
     "@babel/cli": "^7.7.7",
     "@babel/core": "^7.7.7",
