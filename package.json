@@ -9,7 +9,7 @@
   "scripts": {
     "prepublishOnly": "npm run clean && npm run lint && npm run babz",
     "publishDemo": "npm run buildDemo && gh-pages -d ghpDemo",
-    "buildDemo": "parcel build usageExamples/index.html --out-dir ghpDemo",
+    "buildDemo": "parcel build usageExamples/index.html --public-url ./ --out-dir ghpDemo",
     "tarball": "npm run babz && npm pack && mkdir -p tarball && mv dummies-1.0.0.tgz tarball/",
     "clean": "rm -rf .cache && rm -rf devSandbox && rm -rf dist && rm -rf tarball && rm -rf ghpDemo",
     "start": "parcel usageExamples/index.html --out-dir devSandbox --open",
