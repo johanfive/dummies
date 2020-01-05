@@ -51,7 +51,8 @@ export const errorStyle = () => ({
   color: 'red',
   padding,
   position: 'absolute',
-  top: '1.8rem'
+  top: '1.8rem',
+  zIndex: '99998'
 });
 
 export const iconStyle = (iconLeft) => {
