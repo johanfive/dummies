@@ -12,7 +12,7 @@
     "buildDemo": "parcel build usageExamples/index.html --public-url ./ --out-dir ghpDemo",
     "tarball": "npm run babz && npm pack && mkdir -p tarball && mv dummies-1.0.0.tgz tarball/",
     "clean": "rm -rf .cache && rm -rf devSandbox && rm -rf dist && rm -rf tarball && rm -rf ghpDemo",
-    "start": "parcel usageExamples/index.html --out-dir devSandbox --open",
+    "start": "rm -rf .cache && parcel usageExamples/index.html --out-dir devSandbox --open",
     "lint": "eslint actualLibrary/**/*.js",
     "babz": "babel actualLibrary -d dist"
   },
@@ -40,6 +40,7 @@
     "eslint-plugin-react": "^7.17.0",
     "gh-pages": "^2.1.1",
     "parcel-bundler": "^1.12.4",
+    "pretty-format": "^24.9.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-router": "^5.1.2",

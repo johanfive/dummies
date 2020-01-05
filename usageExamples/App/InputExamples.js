@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Input, useWindowSize } from '../../actualLibrary';
-import { PropsTable, inputProps } from '../propTypes';
+import { DemoBox, PropsTable } from './nonShipped';
+import { inputProps } from '../propTypes';
 
 const settersStyle = windowWidth => ({
   alignItems: 'flex-start',
@@ -32,6 +33,15 @@ const InputExamples = () => {
   const [label, setlabel] = useState(labelInitState);
   const helpTextInitState = 'Some valuable intel on how to populate the field';
   const [helpText, sethelpText] = useState(helpTextInitState);
+  const [alignItems, setAlignItems] = useState();
+  const toggleAlignItems = () => alignItems ? setAlignItems() : setAlignItems('flex-start');
+  const flexStyle = () => {
+    const base = { border: inputWidthDemoStyle.border, flexDirection: 'column' };
+    if (alignItems) {
+      return { ...base, alignItems };
+    }
+    return base;
+  };
   return (
     <>
       <Input
@@ -121,18 +131,18 @@ const InputExamples = () => {
       <h2>Demos</h2>
 
       <h3>Bare - no props</h3>
-      <Input />
+      <DemoBox><Input /></DemoBox>
 
       <h3 id="disabled">Disabled</h3>
       <p>When the <Badge text="disabled" /> prop is true, the <Badge text="placeholder" /> prop is ignored</p>
-      <Input disabled placeholder={placeholder} />
+      <DemoBox><Input disabled placeholder={placeholder} /></DemoBox>
 
       <h3 id="placeholder">With placeholder</h3>
-      <Input placeholder={placeholder} />
+      <DemoBox><Input placeholder={placeholder} /></DemoBox>
 
       <h3 id="label">With label</h3>
       <p>There's a default margin when the label is on the left.</p>
-      <Input label={label} />
+      <DemoBox><Input label={label} /></DemoBox>
 
       <h3 id="labelBlockOnTop">With label on top</h3>
       <p id="id">
@@ -141,57 +151,64 @@ const InputExamples = () => {
         <br />(Again, the input's <Badge text="id" /> defaults to the <Badge text="label" />'s value if it is not explicitly defined)
         <br />This is a use case for the <Badge text="id" /> prop
       </p>
-      <Input label={label} labelBlockOnTop id="unique" />
+      <DemoBox><Input label={label} labelBlockOnTop id="unique" /></DemoBox>
 
       <h3 id="helpText">With help text</h3>
       <p>There's a default margin when the helpText is on the left.</p>
-      <Input helpText={helpText} />
+      <DemoBox><Input helpText={helpText} /></DemoBox>
 
       <h3>With help text on top</h3>
       <p>
         The help text is part of the label block, so to have it above the inner input field, use the <Badge text="labelBlockOnTop" /> prop.
       </p>
-      <Input helpText={helpText} labelBlockOnTop />
+      <DemoBox><Input helpText={helpText} labelBlockOnTop /></DemoBox>
 
       <h3 id="icon">With icon</h3>
-      <Input icon={<i className="fas fa-arrow-right"></i>} />
+      <DemoBox><Input icon={<i className="fas fa-arrow-right"></i>} /></DemoBox>
 
       <h3 id="iconLeft">With icon on the left</h3>
-      <Input
-        icon={<i className="fas fa-arrow-left"></i>}
-        iconLeft
-        placeholder="Notice the auto-spacing between the icon and the text for left icons..."
-      />
+      <DemoBox>
+        <Input
+          icon={<i className="fas fa-arrow-left"></i>}
+          iconLeft
+          placeholder="Notice the auto-spacing between the icon and the text for left icons..."
+        />
+      </DemoBox>
 
       <h3 id="inputWidth">Controlling the width of the inner input field</h3>
       <p>
         The default assumes that more often than not, the <Badge text="label" /> prop will be defined and the label will be on the left
         <br />The main wrapper being a flex blox, if <Badge text="label" /> is undefined it looks like the inner input field floats right:
       </p>
-      <Input inputWidth="50%" />
+      <DemoBox><Input inputWidth="50%" /></DemoBox>
       <p>
         Passing the <Badge text="labelBlockOnTop" /> prop is equivalent to changing the flex-direction on the main wrapper (from row to column):
       </p>
-      <Input labelBlockOnTop inputWidth="50%" />
+      <DemoBox><Input labelBlockOnTop inputWidth="50%" /></DemoBox>
       <p id="style">
         If you prefer to be more explicit about things, just override with the <Badge text="style" /> prop
         <br />Understand that the <b>style</b> object will only be applied to the main wrapper (hence the separate <Badge text="inputWidth" /> prop)
+        <br />It's just flexbox under the hood: <button onClick={toggleAlignItems}>Click me!</button>
       </p>
-      <Input inputWidth="25%" style={{ border: inputWidthDemoStyle.border, flexDirection: 'column' }} />
-      <p>Now since the inner input field defaults to 100% of its parent, styling the main wrapper can be enough:</p>
-      <Input style={inputWidthDemoStyle} />
+      <DemoBox><Input inputWidth="25%" style={flexStyle()} /></DemoBox>
+      <p>Now since the inner input field defaults to 100% of its parent, styling the main wrapper should be enough in most cases:</p>
+      <DemoBox><Input style={inputWidthDemoStyle} /></DemoBox>
       <p>By default the label is centered vertically with the inner input field. If the helpText gets too long...</p>
-      <Input
-        style={inputWidthDemoStyle}
-        label="center"
-        helpText="A long helpText to show what vertical-align looks like by default..."
-      />
+      <DemoBox>
+        <Input
+          style={inputWidthDemoStyle}
+          label="center"
+          helpText="A long helpText to show what vertical-align looks like by default..."
+        />
+      </DemoBox>
       <p>You can simply override the behaviour with the <Badge text="style" /> prop setting the alignItems to "flex-start":</p>
-      <Input
-        style={{ ...inputWidthDemoStyle, alignItems: 'flex-start' }}
-        label="flex-start"
-        helpText="A long helpText to show what vertical-align looks like by default..."
-      />
+      <DemoBox>
+        <Input
+          style={{ ...inputWidthDemoStyle, alignItems: 'flex-start' }}
+          label="flex-start"
+          helpText="A long helpText to show what vertical-align looks like by default..."
+        />
+      </DemoBox>
 
       <h3 id="validation">With validation</h3>
       <p>
@@ -200,14 +217,18 @@ const InputExamples = () => {
         therefore it must return true on invalid, false otherwise
         <br />It receives only 1 argument: the input value
       </p>
-      <Input validation={text => text === 'LOL'} placeholder='Type "LOL"' />
+      <DemoBox funcStrings={'text => text === \'LOL\''}>
+        <Input validation={text => text === 'LOL'} placeholder='Type "LOL"' />
+      </DemoBox>
 
       <h3 id="errorMessage">With errorMessage</h3>
       <p>
         On invalid input, the error message will default to "Invalid"
         <br />the <Badge text="errorMessage" /> prop is there to override this default
       </p>
-      <Input validation={text => text === 'LOL'} placeholder='Type "LOL"' errorMessage="No jokes" />
+      <DemoBox funcStrings={'text => text === \'LOL\''}>
+        <Input validation={text => text === 'LOL'} placeholder='Type "LOL"' errorMessage="No jokes" />
+      </DemoBox>
       <div style={{ marginTop: '34rem' }}></div>
     </>
   );
