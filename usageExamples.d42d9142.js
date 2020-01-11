@@ -100,4 +100,4 @@ var e;function t(e){return(t="function"==typeof Symbol&&"symbol"==typeof Symbol.
 },{"react":"n8MK","react-router-dom":"uc19","history":"Wop6","./Default":"l9Zi","./InputExamples":"JQhx"}],"Focm":[function(require,module,exports) {
 "use strict";var e=u(require("react")),t=u(require("react-dom")),r=u(require("./App"));function u(e){return e&&e.__esModule?e:{default:e}}t.default.render(e.default.createElement(r.default,null),document.getElementById("demo")),module.hot&&module.hot.accept();
 },{"react":"n8MK","react-dom":"NKHc","./App":"Sz1i"}]},{},["Focm"], null)
-//# sourceMappingURL=usageExamples.d42d9142.js.map
+//# sourceMappingURL=https://johanfive.github.io/dummies/usageExamples.d42d9142.js.map
