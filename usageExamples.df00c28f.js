@@ -4165,7 +4165,38 @@ if ("production" !== "production") {
     style: _propTypes.default.object
   });
 }
-},{"react-router":"LI7H","@babel/runtime/helpers/esm/inheritsLoose":"S11h","react":"n8MK","history":"Wop6","prop-types":"D9Od","tiny-warning":"sIbj","@babel/runtime/helpers/esm/extends":"SpjQ","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"Vabl","tiny-invariant":"bfQg"}],"eYyk":[function(require,module,exports) {
+},{"react-router":"LI7H","@babel/runtime/helpers/esm/inheritsLoose":"S11h","react":"n8MK","history":"Wop6","prop-types":"D9Od","tiny-warning":"sIbj","@babel/runtime/helpers/esm/extends":"SpjQ","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"Vabl","tiny-invariant":"bfQg"}],"I7D0":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.blue = exports.pink = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var pink = {
+  name: 'pink',
+  value: {
+    mainColor: 'hotpink'
+  }
+};
+exports.pink = pink;
+var blue = {
+  name: 'blue',
+  value: {
+    mainColor: 'deepskyblue'
+  }
+};
+exports.blue = blue;
+
+var ThemeContext = _react.default.createContext({});
+
+var _default = ThemeContext;
+exports.default = _default;
+},{"react":"n8MK"}],"eYyk":[function(require,module,exports) {
 var define;
 function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function (obj) { return typeof obj; }; } else { _typeof2 = function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
 
@@ -8353,13 +8384,15 @@ var inputBlockStyle = function inputBlockStyle(width, labelBlockOnLeft, labelBlo
 
 exports.inputBlockStyle = inputBlockStyle;
 
-var inputStyle = function inputStyle(iconLeft, disabled) {
+var inputStyle = function inputStyle(iconLeft, disabled, error) {
   return {
     background: disabled ? '#f5f5f5' : undefined,
+    borderColor: error ? 'red' : undefined,
     borderRadius: borderRadius,
     boxSizing: boxSizing,
     fontFamily: 'inherit',
     fontSize: 'inherit',
+    outline: error ? 0 : undefined,
     padding: padding,
     paddingLeft: iconLeft ? '2rem' : padding,
     paddingRight: iconLeft ? padding : '2rem',
@@ -8435,6 +8468,8 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -8443,9 +8478,14 @@ function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) ||
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
 var Input = function Input(_ref) {
   var disabled = _ref.disabled,
       errorMessage = _ref.errorMessage,
+      getRef = _ref.getRef,
       helpText = _ref.helpText,
       icon = _ref.icon,
       iconLeft = _ref.iconLeft,
@@ -8459,31 +8499,59 @@ var Input = function Input(_ref) {
       toolTip = _ref.toolTip,
       toolTipIcon = _ref.toolTipIcon,
       validation = _ref.validation,
-      doWithState = _ref.doWithState;
+      doWithState = _ref.doWithState,
+      rest = _objectWithoutProperties(_ref, ["disabled", "errorMessage", "getRef", "helpText", "icon", "iconLeft", "id", "inputWidth", "label", "labelBlockOnTop", "placeholder", "required", "style", "toolTip", "toolTipIcon", "validation", "doWithState"]);
 
-  var _useState = (0, _react.useState)(''),
+  var ref = (0, _react.useRef)(null);
+  (0, _react.useEffect)(function () {
+    if (getRef) {
+      getRef(ref);
+    }
+  }, []);
+
+  var _useState = (0, _react.useState)(false),
       _useState2 = _slicedToArray(_useState, 2),
-      text = _useState2[0],
-      setText = _useState2[1];
+      error = _useState2[0],
+      setError = _useState2[1];
 
-  var _useState3 = (0, _react.useState)(false),
-      _useState4 = _slicedToArray(_useState3, 2),
-      error = _useState4[0],
-      setError = _useState4[1];
+  var errorMsg = errorMessage || 'Invalid';
 
-  var handleChange = function handleChange(value) {
-    setText(value);
-    var isInputValid = error;
+  var handleChange = function handleChange(e) {
+    e.preventDefault();
+    var isInputInvalid = error;
 
     if (validation) {
-      isInputValid = validation(value);
-      setError(isInputValid);
+      isInputInvalid = validation(ref.current.value);
+
+      if (isInputInvalid) {
+        if (!error) {
+          setError(isInputInvalid);
+        }
+
+        if (ref.current.validity.valid) {
+          ref.current.setCustomValidity(errorMsg);
+        }
+      } else {
+        if (error) {
+          setError(isInputInvalid);
+        }
+
+        if (ref.current.validationMessage) {
+          ref.current.setCustomValidity('');
+        }
+      }
+    }
+
+    if (!ref.current.validity.valid) {
+      setError(true);
+    } else {
+      setError(false);
     }
 
     if (doWithState) {
       doWithState({
-        inputValue: value,
-        isInputValid: isInputValid
+        inputValue: ref.current.value,
+        isInputValid: !isInputInvalid
       });
     }
   };
@@ -8505,18 +8573,22 @@ var Input = function Input(_ref) {
     style: (0, _styles.inputBlockStyle)(inputWidth, labelBlockOnLeft, labelBlockOnTop)
   }, icon && _react.default.createElement("i", {
     style: (0, _styles.iconStyle)(iconLeft)
-  }, icon), _react.default.createElement("input", {
-    onChange: function onChange(e) {
-      return handleChange(e.target.value);
-    },
+  }, icon), _react.default.createElement("input", _extends({
+    name: uid
+  }, rest, {
+    // anything above can be overridden, anything below is strictly set here
     placeholder: disabled ? '' : placeholder,
-    style: (0, _styles.inputStyle)(iconLeft, disabled),
+    onChange: function onChange(e) {
+      return handleChange(e);
+    },
     disabled: disabled,
-    value: text,
+    required: required,
+    style: (0, _styles.inputStyle)(iconLeft, disabled, error),
+    ref: ref,
     id: uid
-  }), error && _react.default.createElement("div", {
+  })), error && _react.default.createElement("div", {
     style: (0, _styles.errorStyle)()
-  }, errorMessage || 'Invalid')));
+  }, errorMsg)));
 };
 
 exports.Input = Input;
@@ -8649,22 +8721,29 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.inputProps = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _actualLibrary = require("../../actualLibrary");
 
+var _themes = _interopRequireDefault(require("../App/themes"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 /* eslint-disable sort-keys */
 
 /* eslint-disable react/prop-types */
-var InternalLink = function InternalLink(_ref) {
+var StyledLink = function StyledLink(_ref) {
   var text = _ref.text,
       href = _ref.href;
+  var theme = (0, _react.useContext)(_themes.default);
   return _react.default.createElement("a", {
     href: href,
     style: {
-      'color': 'hotpink'
+      'color': theme.mainColor
     }
   }, text);
 };
@@ -8683,13 +8762,13 @@ var toolTipStyle = {
   borderRadius: '5px'
 };
 var inputProps = [{
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "disabled",
     href: "#disabled"
   }),
   types: ['boolean']
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "doWithState",
     href: "#doWithState"
   }),
@@ -8699,7 +8778,7 @@ var inputProps = [{
     style: preStyle
   }, "({ inputValue, isInputValid }) =>\n  console.log(\n    `${inputValue}: ${isInputValid ? '\u221A' : 'x'}`\n  )")
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "errorMessage",
     href: "#errorMessage"
   }),
@@ -8709,7 +8788,15 @@ var inputProps = [{
     style: preStyle
   }, "\u2219 \"Five\" is not a color\n\u2219 <div style={{ border: \"1px solid hotpink\" }}>\n    \"hotpink\" is not a number\n  </div>")
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: 'getRef',
+  types: ['function'],
+  notes: _react.default.createElement("div", null, "Gets passed the ref of the innermost input tag", _react.default.createElement("br", null), _react.default.createElement(StyledLink, {
+    text: "Check this out",
+    href: "https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation"
+  })),
+  examples: 'ref => console.log(ref.current.value)'
+}, {
+  name: _react.default.createElement(StyledLink, {
     text: "helpText",
     href: "#helpText"
   }),
@@ -8719,7 +8806,7 @@ var inputProps = [{
     style: preStyle
   }, "\u2219 3 digits number at the back of your card\n\u2219 <div style={{ color: \"deepskyblue\" }}>\n    3 digits number at the back of your card\n  </div>")
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "icon",
     href: "#icon"
   }),
@@ -8731,20 +8818,20 @@ var inputProps = [{
     className: "fas fa-bolt"
   }), ", \uD83D\uDE0E, \uD83C\uDFA7, # etc..."), _react.default.createElement("li", null, "\u2219 ", '<i className="fas fa-bolt"></i>'))
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "iconLeft",
     href: "#iconLeft"
   }),
   types: ['boolean']
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "id",
     href: "#id"
   }),
   types: ['string'],
   notes: _react.default.createElement("div", null, "* If undefined, defaults to the label prop's value.", _react.default.createElement("br", null), "* Required when 2+ inputs have the same Label", _react.default.createElement("br", null), "Surprisingly (but fortunately) clicking the label will still focus the input", _react.default.createElement("br", null), _react.default.createElement("em", null, "even if"), " the id prop defaults to the label and the label is a node instead of a string")
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "inputWidth",
     href: "#inputWidth"
   }),
@@ -8754,7 +8841,7 @@ var inputProps = [{
     style: listStyle
   }, _react.default.createElement("li", null, "\u2219 90%"), _react.default.createElement("li", null, "\u2219 25rem"), _react.default.createElement("li", null, "\u2219 250px"), _react.default.createElement("li", null, "etc..."))
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "label",
     href: "#label"
   }),
@@ -8764,27 +8851,27 @@ var inputProps = [{
     style: listStyle
   }, _react.default.createElement("li", null, "\u2219 First Name:"), _react.default.createElement("li", null, "\u2219 ", '<FormattedMessage id="FIRST_NAME" />'))
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "labelBlockOnTop",
     href: "#labelBlockOnTop"
   }),
   types: ['boolean']
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "placeholder",
     href: "#placeholder"
   }),
   types: ['string'],
   notes: 'Cannot be anything other than a string. For translations use "injectIntl"'
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "required",
     href: "#required"
   }),
   types: ['boolean'],
   notes: 'Shows a red * by the label to indicate that the field must be... filled'
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "style",
     href: "#style"
   }),
@@ -8794,7 +8881,7 @@ var inputProps = [{
     style: preStyle
   }, "\n    {\n      width: '55%',\n      margin: '5rem'\n    }\n      ")
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "toolTip",
     href: "#toolTip"
   }),
@@ -8818,7 +8905,7 @@ var inputProps = [{
     className: "far fa-question-circle"
   }), ", \uD83D\uDE0E, \uD83C\uDFA7, # etc..."), _react.default.createElement("li", null, "\u2219 ", '<i className="far fa-question-circle"></i>'))
 }, {
-  name: _react.default.createElement(InternalLink, {
+  name: _react.default.createElement(StyledLink, {
     text: "validation",
     href: "#validation"
   }),
@@ -8829,7 +8916,7 @@ var inputProps = [{
   }, _react.default.createElement("li", null, "\u2219 value => value === 'noGood'"), _react.default.createElement("li", null, "\u2219 value => value !== 'good'"))
 }];
 exports.inputProps = inputProps;
-},{"react":"n8MK","../../actualLibrary":"tQm2"}],"D9iF":[function(require,module,exports) {
+},{"react":"n8MK","../../actualLibrary":"tQm2","../App/themes":"I7D0"}],"D9iF":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8907,9 +8994,13 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _actualLibrary = require("../../actualLibrary");
 
+var _themes = _interopRequireDefault(require("./themes"));
+
 var _nonShipped = require("./nonShipped");
 
 var _propTypes = require("../propTypes");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
@@ -8944,13 +9035,17 @@ var toolTipStyle = {
   padding: '1rem',
   width: '14rem'
 };
-var inputWidthDemoStyle = {
-  border: '1px solid hotpink',
-  width: '25%'
-}; // eslint-disable-next-line react/prop-types
 
-var Badge = function Badge(_ref) {
-  var text = _ref.text;
+var inputWidthDemosStyle = function inputWidthDemosStyle(_ref) {
+  var mainColor = _ref.mainColor;
+  return {
+    border: "1px solid ".concat(mainColor),
+    width: '25%'
+  };
+};
+
+var Badge = function Badge(_ref2) {
+  var text = _ref2.text;
   return _react.default.createElement("span", {
     style: {
       background: '#f5f5f5'
@@ -8958,44 +9053,81 @@ var Badge = function Badge(_ref) {
   }, "\xA0", text, "\xA0");
 };
 
+var Section = function Section(_ref3) {
+  var children = _ref3.children;
+  return _react.default.createElement("div", {
+    style: {
+      marginBottom: '5rem'
+    }
+  }, children);
+};
+
 var InputExamples = function InputExamples() {
   var _useWindowSize = (0, _actualLibrary.useWindowSize)(),
       _useWindowSize2 = _slicedToArray(_useWindowSize, 1),
       windowWidth = _useWindowSize2[0];
 
+  var theme = (0, _react.useContext)(_themes.default);
+
+  var _useState = (0, _react.useState)([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      submittedValues = _useState2[0],
+      setSubmittedValues = _useState2[1];
+
+  var _useState3 = (0, _react.useState)({}),
+      _useState4 = _slicedToArray(_useState3, 2),
+      refsForSubmit = _useState4[0],
+      setRefsForSubmit = _useState4[1];
+
+  var registerRef = function registerRef(ref) {
+    setRefsForSubmit(Object.assign(refsForSubmit, _defineProperty({}, ref.current.id, ref)));
+  };
+
+  var handleSubmit = function handleSubmit() {
+    var submittedVals = [];
+    Object.keys(refsForSubmit).forEach(function (refId) {
+      var inputRef = refsForSubmit[refId];
+      console.log(inputRef);
+      submittedVals.push(_react.default.createElement("tr", {
+        key: refId
+      }, _react.default.createElement("td", null, "id: ", inputRef.current.id), _react.default.createElement("td", null, "value: ", inputRef.current.value || '"field empty"'), _react.default.createElement("td", null, "hasBombed: ", !inputRef.current.validity.valid ? 'true' : 'false'), _react.default.createElement("td", null, "errMsg: ", inputRef.current.validationMessage || 'n/a')));
+    });
+    setSubmittedValues(submittedVals);
+  };
+
   var placeholderInitState = 'Type things here...';
 
-  var _useState = (0, _react.useState)(placeholderInitState),
-      _useState2 = _slicedToArray(_useState, 2),
-      placeholder = _useState2[0],
-      setPlaceholder = _useState2[1];
+  var _useState5 = (0, _react.useState)(placeholderInitState),
+      _useState6 = _slicedToArray(_useState5, 2),
+      placeholder = _useState6[0],
+      setPlaceholder = _useState6[1];
 
   var labelInitState = 'Username:';
 
-  var _useState3 = (0, _react.useState)(labelInitState),
-      _useState4 = _slicedToArray(_useState3, 2),
-      label = _useState4[0],
-      setlabel = _useState4[1];
+  var _useState7 = (0, _react.useState)(labelInitState),
+      _useState8 = _slicedToArray(_useState7, 2),
+      label = _useState8[0],
+      setlabel = _useState8[1];
 
   var helpTextInitState = 'Some valuable intel on how to populate the field';
 
-  var _useState5 = (0, _react.useState)(helpTextInitState),
-      _useState6 = _slicedToArray(_useState5, 2),
-      helpText = _useState6[0],
-      sethelpText = _useState6[1];
+  var _useState9 = (0, _react.useState)(helpTextInitState),
+      _useState10 = _slicedToArray(_useState9, 2),
+      helpText = _useState10[0],
+      sethelpText = _useState10[1];
 
-  var _useState7 = (0, _react.useState)(),
-      _useState8 = _slicedToArray(_useState7, 2),
-      alignItems = _useState8[0],
-      setAlignItems = _useState8[1];
+  var _useState11 = (0, _react.useState)(),
+      _useState12 = _slicedToArray(_useState11, 2),
+      alignItems = _useState12[0],
+      setAlignItems = _useState12[1];
 
   var toggleAlignItems = function toggleAlignItems() {
-    return alignItems ? setAlignItems() : setAlignItems('flex-start');
+    return setAlignItems(alignItems ? undefined : 'flex-start');
   };
 
   var flexStyle = function flexStyle() {
     var base = {
-      border: inputWidthDemoStyle.border,
+      border: inputWidthDemosStyle(theme).border,
       flexDirection: 'column'
     };
 
@@ -9008,7 +9140,7 @@ var InputExamples = function InputExamples() {
     return base;
   };
 
-  return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_actualLibrary.Input, {
+  return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(Section, null, _react.default.createElement(_actualLibrary.Input, {
     required: true,
     id: "toolTip",
     toolTip: _react.default.createElement("div", {
@@ -9021,7 +9153,7 @@ var InputExamples = function InputExamples() {
       float: 'right',
       width: '25%'
     }
-  }), _react.default.createElement("h1", null, "Input"), _react.default.createElement(_actualLibrary.Input, {
+  }), _react.default.createElement("h1", null, "Input"), _react.default.createElement("form", null, _react.default.createElement(_actualLibrary.Input, {
     required: true,
     id: "required",
     placeholder: "Some placeholder. Type \"LOL\"",
@@ -9039,7 +9171,7 @@ var InputExamples = function InputExamples() {
       className: "far fa-question-circle"
     }),
     validation: function validation(text) {
-      return text === 'LOL';
+      return text.trim() === 'LOL';
     },
     errorMessage: "Nooo LOL!",
     inputWidth: "55%",
@@ -9050,11 +9182,14 @@ var InputExamples = function InputExamples() {
       padding: '2rem'
     },
     doWithState: function doWithState(state) {
-      return console.log('value: ', state.inputValue, 'hasBombed: ', state.isInputValid);
-    }
-  }), _react.default.createElement("h2", null, "Props"), _react.default.createElement(_nonShipped.PropsTable, {
+      return console.log('value: ', state.inputValue, 'hasBombed: ', !state.isInputValid);
+    },
+    getRef: registerRef
+  }), _react.default.createElement("button", {
+    onClick: handleSubmit
+  }, "SUBMIT"), submittedValues.length > 0 && _react.default.createElement("div", null, _react.default.createElement("table", null, _react.default.createElement("tbody", null, submittedValues)), _react.default.createElement("span", null, "(The id defaults to the label prop if not explicitly defined)")))), _react.default.createElement(Section, null, _react.default.createElement("h2", null, "Props"), _react.default.createElement(_nonShipped.PropsTable, {
     props: _propTypes.inputProps
-  }), _react.default.createElement("h3", {
+  })), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "doWithState"
   }, "The values of the inputs below will be applied to all relevant demos further down below."), _react.default.createElement(_actualLibrary.Input, {
     placeholder: "--> This guy <--",
@@ -9066,10 +9201,11 @@ var InputExamples = function InputExamples() {
     errorMessage: "That's one unreasonably long placeholder isn't it?",
     inputWidth: "70%",
     style: settersStyle(windowWidth),
-    doWithState: function doWithState(_ref2) {
-      var inputValue = _ref2.inputValue;
+    doWithState: function doWithState(_ref4) {
+      var inputValue = _ref4.inputValue;
       return setPlaceholder(inputValue || placeholderInitState);
-    }
+    },
+    getRef: registerRef
   }), _react.default.createElement(_actualLibrary.Input, {
     label: "--> This guy <--",
     helpText: "Set the value for the label prop",
@@ -9080,10 +9216,11 @@ var InputExamples = function InputExamples() {
     errorMessage: "That's one unreasonably long label isn't it?",
     inputWidth: "70%",
     style: settersStyle(windowWidth),
-    doWithState: function doWithState(_ref3) {
-      var inputValue = _ref3.inputValue;
+    doWithState: function doWithState(_ref5) {
+      var inputValue = _ref5.inputValue;
       return setlabel(inputValue || labelInitState);
-    }
+    },
+    getRef: registerRef
   }), _react.default.createElement(_actualLibrary.Input, {
     label: "Help Text:",
     helpText: "--> This guy <--",
@@ -9094,10 +9231,11 @@ var InputExamples = function InputExamples() {
     errorMessage: "No swearing son!",
     inputWidth: "70%",
     style: settersStyle(windowWidth),
-    doWithState: function doWithState(_ref4) {
-      var inputValue = _ref4.inputValue;
+    doWithState: function doWithState(_ref6) {
+      var inputValue = _ref6.inputValue;
       return sethelpText(inputValue || helpTextInitState);
-    }
+    },
+    getRef: registerRef
   }), _react.default.createElement(_actualLibrary.Input, {
     placeholder: "Type anything",
     label: "Error message:",
@@ -9110,8 +9248,9 @@ var InputExamples = function InputExamples() {
     },
     errorMessage: "--> This guy <--",
     inputWidth: "70%",
-    style: settersStyle(windowWidth)
-  }), _react.default.createElement("h2", null, "Demos"), _react.default.createElement("h3", null, "Bare - no props"), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, null)), _react.default.createElement("h3", {
+    style: settersStyle(windowWidth),
+    getRef: registerRef
+  })), _react.default.createElement("h2", null, "Demos"), _react.default.createElement(Section, null, _react.default.createElement("h3", null, "Bare - no props"), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, null))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "disabled"
   }, "Disabled"), _react.default.createElement("p", null, "When the ", _react.default.createElement(Badge, {
     text: "disabled"
@@ -9120,15 +9259,15 @@ var InputExamples = function InputExamples() {
   }), " prop is ignored"), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
     disabled: true,
     placeholder: placeholder
-  })), _react.default.createElement("h3", {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "placeholder"
   }, "With placeholder"), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
     placeholder: placeholder
-  })), _react.default.createElement("h3", {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "label"
   }, "With label"), _react.default.createElement("p", null, "There's a default margin when the label is on the left."), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
     label: label
-  })), _react.default.createElement("h3", {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "labelBlockOnTop"
   }, "With label on top"), _react.default.createElement("p", {
     id: "id"
@@ -9144,22 +9283,22 @@ var InputExamples = function InputExamples() {
     label: label,
     labelBlockOnTop: true,
     id: "unique"
-  })), _react.default.createElement("h3", {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "helpText"
   }, "With help text"), _react.default.createElement("p", null, "There's a default margin when the helpText is on the left."), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
     helpText: helpText
-  })), _react.default.createElement("h3", null, "With help text on top"), _react.default.createElement("p", null, "The help text is part of the label block, so to have it above the inner input field, use the ", _react.default.createElement(Badge, {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", null, "With help text on top"), _react.default.createElement("p", null, "The help text is part of the label block, so to have it above the inner input field, use the ", _react.default.createElement(Badge, {
     text: "labelBlockOnTop"
   }), " prop."), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
     helpText: helpText,
     labelBlockOnTop: true
-  })), _react.default.createElement("h3", {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "icon"
   }, "With icon"), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
     icon: _react.default.createElement("i", {
       className: "fas fa-arrow-right"
     })
-  })), _react.default.createElement("h3", {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "iconLeft"
   }, "With icon on the left"), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
     icon: _react.default.createElement("i", {
@@ -9167,7 +9306,7 @@ var InputExamples = function InputExamples() {
     }),
     iconLeft: true,
     placeholder: "Notice the auto-spacing between the icon and the text for left icons..."
-  })), _react.default.createElement("h3", {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "inputWidth"
   }, "Controlling the width of the inner input field"), _react.default.createElement("p", null, "The default assumes that more often than not, the ", _react.default.createElement(Badge, {
     text: "label"
@@ -9192,20 +9331,20 @@ var InputExamples = function InputExamples() {
     inputWidth: "25%",
     style: flexStyle()
   })), _react.default.createElement("p", null, "Now since the inner input field defaults to 100% of its parent, styling the main wrapper should be enough in most cases:"), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
-    style: inputWidthDemoStyle
+    style: inputWidthDemosStyle(theme)
   })), _react.default.createElement("p", null, "By default the label is centered vertically with the inner input field. If the helpText gets too long..."), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
-    style: inputWidthDemoStyle,
+    style: inputWidthDemosStyle(theme),
     label: "center",
     helpText: "A long helpText to show what vertical-align looks like by default..."
   })), _react.default.createElement("p", null, "You can simply override the behaviour with the ", _react.default.createElement(Badge, {
     text: "style"
   }), " prop setting the alignItems to \"flex-start\":"), _react.default.createElement(_nonShipped.DemoBox, null, _react.default.createElement(_actualLibrary.Input, {
-    style: _objectSpread({}, inputWidthDemoStyle, {
+    style: _objectSpread({}, inputWidthDemosStyle(theme), {
       alignItems: 'flex-start'
     }),
     label: "flex-start",
     helpText: "A long helpText to show what vertical-align looks like by default..."
-  })), _react.default.createElement("h3", {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "validation"
   }, "With validation"), _react.default.createElement("p", null, "The ", _react.default.createElement(Badge, {
     text: "validation"
@@ -9216,7 +9355,7 @@ var InputExamples = function InputExamples() {
       return text === 'LOL';
     },
     placeholder: "Type \"LOL\""
-  })), _react.default.createElement("h3", {
+  }))), _react.default.createElement(Section, null, _react.default.createElement("h3", {
     id: "errorMessage"
   }, "With errorMessage"), _react.default.createElement("p", null, "On invalid input, the error message will default to \"Invalid\"", _react.default.createElement("br", null), "the ", _react.default.createElement(Badge, {
     text: "errorMessage"
@@ -9228,7 +9367,7 @@ var InputExamples = function InputExamples() {
     },
     placeholder: "Type \"LOL\"",
     errorMessage: "No jokes"
-  })), _react.default.createElement("div", {
+  }))), _react.default.createElement("div", {
     style: {
       marginTop: '34rem'
     }
@@ -9237,7 +9376,7 @@ var InputExamples = function InputExamples() {
 
 var _default = InputExamples;
 exports.default = _default;
-},{"react":"n8MK","../../actualLibrary":"tQm2","./nonShipped":"JAGQ","../propTypes":"D9iF"}],"Sz1i":[function(require,module,exports) {
+},{"react":"n8MK","../../actualLibrary":"tQm2","./themes":"I7D0","./nonShipped":"JAGQ","../propTypes":"D9iF"}],"Sz1i":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9245,15 +9384,29 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _reactRouterDom = require("react-router-dom");
+
+var _themes = _interopRequireWildcard(require("./themes"));
 
 var _Default = _interopRequireDefault(require("./Default"));
 
 var _InputExamples = _interopRequireDefault(require("./InputExamples"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -9266,9 +9419,12 @@ var navStyle = {
   float: 'right',
   padding: '1rem'
 };
-var linkStyle = {
-  color: 'hotpink',
-  margin: '0 1rem'
+
+var linkStyle = function linkStyle(theme) {
+  return {
+    color: theme.mainColor,
+    margin: '0 1rem'
+  };
 };
 
 var activeStyle = _objectSpread({}, linkStyle, {
@@ -9276,32 +9432,49 @@ var activeStyle = _objectSpread({}, linkStyle, {
 });
 
 var App = function App() {
-  return _react.default.createElement(_reactRouterDom.BrowserRouter, {
+  var _useState = (0, _react.useState)(_themes.pink),
+      _useState2 = _slicedToArray(_useState, 2),
+      theme = _useState2[0],
+      setTheme = _useState2[1];
+
+  var toggleTheme = function toggleTheme() {
+    return theme.name === 'pink' ? setTheme(_themes.blue) : setTheme(_themes.pink);
+  };
+
+  return _react.default.createElement(_themes.default.Provider, {
+    value: theme.value
+  }, _react.default.createElement(_reactRouterDom.BrowserRouter, {
     basename: "/dummies"
   }, _react.default.createElement("nav", {
     style: navStyle
-  }, _react.default.createElement(_reactRouterDom.NavLink, {
+  }, _react.default.createElement("button", {
+    onClick: toggleTheme
+  }, "Toggle Styles"), _react.default.createElement(_reactRouterDom.NavLink, {
     exact: true,
     to: "/",
-    style: linkStyle,
+    style: linkStyle(theme.value),
     activeStyle: activeStyle
   }, "Home"), _react.default.createElement(_reactRouterDom.NavLink, {
     to: "/input",
-    style: linkStyle,
+    style: linkStyle(theme.value),
     activeStyle: activeStyle
-  }, "Input")), _react.default.createElement("h1", null, "Dummies"), _react.default.createElement("h2", null, "React components library"), _react.default.createElement(_reactRouterDom.Switch, null, _react.default.createElement(_reactRouterDom.Route, {
+  }, "Input")), _react.default.createElement("h1", null, "Dummies"), _react.default.createElement("h2", {
+    style: {
+      marginBottom: '5rem'
+    }
+  }, "React components library"), _react.default.createElement(_reactRouterDom.Switch, null, _react.default.createElement(_reactRouterDom.Route, {
     exact: true,
     path: "/",
     component: _Default.default
   }), _react.default.createElement(_reactRouterDom.Route, {
     path: "/input",
     component: _InputExamples.default
-  })));
+  }))));
 };
 
 var _default = App;
 exports.default = _default;
-},{"react":"n8MK","react-router-dom":"uc19","./Default":"l9Zi","./InputExamples":"JQhx"}],"Focm":[function(require,module,exports) {
+},{"react":"n8MK","react-router-dom":"uc19","./themes":"I7D0","./Default":"l9Zi","./InputExamples":"JQhx"}],"Focm":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -9320,4 +9493,4 @@ if (module.hot) {
   module.hot.accept();
 }
 },{"react":"n8MK","react-dom":"NKHc","./App":"Sz1i"}]},{},["Focm"], null)
-//# sourceMappingURL=usageExamples.2f932997.js.map
+//# sourceMappingURL=usageExamples.df00c28f.js.map
