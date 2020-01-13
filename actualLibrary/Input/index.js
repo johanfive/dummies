@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ToolTip } from '../';
 import {
   errorStyle,
@@ -14,6 +14,7 @@ import {
 export const Input = ({
   disabled,
   errorMessage,
+  getRef,
   helpText,
   icon,
   iconLeft,
@@ -27,21 +28,50 @@ export const Input = ({
   toolTip,
   toolTipIcon,
   validation,
-  doWithState
+  doWithState,
+  ...rest
 }) => {
-  const [ text, setText ] = useState('');
+  const ref = useRef(null);
+  useEffect(
+    () => {
+      if (getRef) {
+        getRef(ref);
+      }
+    },
+    []
+  );
   const [ error, setError ] = useState(false);
-  const handleChange = value => {
-    setText(value);
-    let isInputValid = error;
+  const errorMsg = errorMessage || 'Invalid';
+  const handleChange = e => {
+    e.preventDefault();
+    let isInputInvalid = error;
     if (validation) {
-      isInputValid = validation(value);
-      setError(isInputValid);
+      isInputInvalid = validation(ref.current.value);
+      if (isInputInvalid) {
+        if (!error) {
+          setError(isInputInvalid);
+        }
+        if (ref.current.validity.valid) {
+          ref.current.setCustomValidity(errorMsg);
+        }
+      } else {
+        if (error) {
+          setError(isInputInvalid);
+        }
+        if (ref.current.validationMessage) {
+          ref.current.setCustomValidity('');
+        }
+      }
+    }
+    if (!ref.current.validity.valid) {
+      setError(true);
+    } else {
+      setError(false);
     }
     if (doWithState) {
       doWithState({
-        inputValue: value,
-        isInputValid
+        inputValue: ref.current.value,
+        isInputValid: !isInputInvalid
       });
     }
   };
@@ -58,14 +88,17 @@ export const Input = ({
       <div style={inputBlockStyle(inputWidth, labelBlockOnLeft, labelBlockOnTop)}>
         {icon && <i style={iconStyle(iconLeft)}>{icon}</i>}
         <input
-          onChange={e => handleChange(e.target.value)}
+          name={uid}
+          {...rest} // anything above can be overridden, anything below is strictly set here
           placeholder={disabled ? '' : placeholder}
-          style={inputStyle(iconLeft, disabled)}
+          onChange={e => handleChange(e)}
           disabled={disabled}
-          value={text}
+          required={required}
+          style={inputStyle(iconLeft, disabled, error)}
+          ref={ref}
           id={uid}
         />
-        {error && <div style={errorStyle()}>{errorMessage || 'Invalid'}</div>}
+        {error && <div style={errorStyle()}>{errorMsg}</div>}
       </div>
     </div>
   );

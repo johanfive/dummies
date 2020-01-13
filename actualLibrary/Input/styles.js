@@ -23,12 +23,14 @@ export const inputBlockStyle = (width, labelBlockOnLeft, labelBlockOnTop) => ({
   width: width || '100%'
 });
 
-export const inputStyle = (iconLeft, disabled) => ({
+export const inputStyle = (iconLeft, disabled, error) => ({
   background: disabled ? '#f5f5f5' : undefined,
+  borderColor: error ? 'red' : undefined,
   borderRadius,
   boxSizing,
   fontFamily: 'inherit',
   fontSize: 'inherit',
+  outline: error ? 0 : undefined,
   padding,
   paddingLeft: iconLeft ? '2rem' : padding,
   paddingRight: iconLeft ? padding : '2rem',

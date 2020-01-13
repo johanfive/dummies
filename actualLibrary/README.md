@@ -4,7 +4,7 @@
 Now with `hooks`, they're anything but.
 ## Get started
 Install dependencies. There's only *dev* dependencies and
-it is assumed that you have npm installed **eslint** -globally at some point
+it is assumed that you have npm installed **eslint** *-globally* at some point
 ```
 npm i
 ```
@@ -46,31 +46,35 @@ export { YourComponent } from './YourComponent';
   + Make and use `Hooks`
 + Even though the `sandbox` is not distributed, it is *version controlled* and should be maintained seriously
   + The sheer process of documenting component thoroughly is guaranteed to make you revisit and improve your initial design
-  + Trying to keep only 1 peerDependency, `PropTypes` aren't defined in the library.
+  + Trying to keep only 1 peerDependency means `PropTypes` aren't defined in the library.
     Having said that, appending to `./usageExamples/propTypes` and using the `PropsTable` component
     brings a tremendous amount of value
     ```js
-    import { PropsTable, yourComponentProps } from '../propTypes';
+    import { PropsTable } from './nonShipped';
+    import { yourComponentProps } from '../propTypes';
     ```
     + `propTypes files` must export a *named* **array of object** with the following *keys*:
-      + *name*: the prop name, can be a string or JSX (to create internal links; see [inputProps.js](usageExamples/propTypes/inputProps.js))
-      + *type*: the prop type
-      + *xNotes*: Details & Examples. Ideally short. Use JSX for multiline
+      + *name*: [required] the prop name, can be a string or JSX (to create internal links; see [inputProps.js](usageExamples/propTypes/inputProps.js))
+      + *types*: [required] an array of strings listing the types the prop accepts
+      + *notes*: [optional] a description and valuable insights on the quirks of the prop (can be string or JSX))
+      + *examples*: [optional] examples of accepted values. Ideally short. Use JSX for multiline
 + Bundling the devSandbox with `Parcel`
-+ The published library is not bundled, it's only Babelified. (Assuming users will do their own bundlings and such)
-## Workflow
++ Beyond providing a devSandbox, the usageExamples app is the main `documentation` and is publicly available at [https://johanfive.github.io/dummies](https://johanfive.github.io/dummies)
++ The published `library` is `not bundled`, it's only Babelified. (Assuming users will do their own bundlings and such)
+## Development Workflow
 1. Start fresh
     ```sh
     npm run clean && npm i
-    # npm run clean is a good 1st step if things behave weird in the devSandbox
-    # .cache might not always be generated reliably
+    # npm run clean essentially wipes all auto generated files
+    # Parcel's hot reload might occasionally mess up .cache/
+    # so npm start 1st does npm run clean
     ```
-2. Create component
-3. Run the local devSandbox
+2. Run the local devSandbox
     ```
     npm start
     ```
-4. Use component in usageExamples (learn, improve, back to step 2 until not embarassed)
+3. Create component
+4. Use component in usageExamples (learn, improve, back to step 3 until not embarassed)
 5. Babelify Dummies:
     ```
     npm run babz
@@ -81,10 +85,14 @@ export { YourComponent } from './YourComponent';
     ```
 7. Open another local project where you can install Dummies with:
     ```sh
-    npm i <pathTo>/dummies/tarball/dummies-1.0.0.tgz # use the current version
+    npm i {pathTo}/dummies/tarball/dummies-1.0.0.tgz # dummies-{current.version}.tgz
     ```
 8. Validate that your component works as expected in this project
 9. Publish for realz:
     ```
     npm publish
+    ```
+10. Publish documentation:
+    ```
+    npm run publishDemo
     ```
