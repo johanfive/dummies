@@ -1,9 +1,13 @@
 /* eslint-disable sort-keys */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useContext } from 'react';
 import { ToolTip } from '../../actualLibrary';
+import ThemeContext from '../App/themes';
 
-const InternalLink = ({ text, href }) => <a href={href} style={{ 'color': 'hotpink' }}>{text}</a>;
+const StyledLink = ({ text, href }) => {
+  const theme = useContext(ThemeContext);
+  return <a href={href} style={{ 'color': theme.mainColor }}>{text}</a>;
+};
 const listStyle = { textAlign: 'left', listStyleType: 'none' };
 const preStyle = { textAlign: 'left' };
 const toolTipStyle = {
@@ -15,11 +19,11 @@ const toolTipStyle = {
 
 export const inputProps = [
   {
-    name: <InternalLink text="disabled" href="#disabled" />,
+    name: <StyledLink text="disabled" href="#disabled" />,
     types: ['boolean']
   },
   {
-    name: <InternalLink text="doWithState" href="#doWithState" />,
+    name: <StyledLink text="doWithState" href="#doWithState" />,
     types: ['function'],
     notes: 'This function exposes the <Input /> state outside of the component',
     examples: (
@@ -32,7 +36,7 @@ export const inputProps = [
     )
   },
   {
-    name: <InternalLink text="errorMessage" href="#errorMessage" />,
+    name: <StyledLink text="errorMessage" href="#errorMessage" />,
     types: ['string', 'node'],
     notes: 'Message shown when validation returns true',
     examples: (
@@ -45,7 +49,18 @@ export const inputProps = [
     )
   },
   {
-    name: <InternalLink text="helpText" href="#helpText" />,
+    name: 'getRef',
+    types: ['function'],
+    notes: (
+      <div>
+        Gets passed the ref of the innermost input tag
+        <br /><StyledLink text="Check this out" href="https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation" />
+      </div>
+    ),
+    examples: 'ref => console.log(ref.current.value)'
+  },
+  {
+    name: <StyledLink text="helpText" href="#helpText" />,
     types: ['string', 'node'],
     notes: 'Some valuable intel on how to populate the field',
     examples: (
@@ -58,7 +73,7 @@ export const inputProps = [
     )
   },
   {
-    name: <InternalLink text="icon" href="#icon" />,
+    name: <StyledLink text="icon" href="#icon" />,
     types: ['string', 'node'],
     notes: 'A visual to display inside the inner input field',
     examples: (
@@ -69,11 +84,11 @@ export const inputProps = [
     )
   },
   {
-    name: <InternalLink text="iconLeft" href="#iconLeft" />,
+    name: <StyledLink text="iconLeft" href="#iconLeft" />,
     types: ['boolean']
   },
   {
-    name: <InternalLink text="id" href="#id" />,
+    name: <StyledLink text="id" href="#id" />,
     types: ['string'],
     notes: (
       <div>
@@ -85,7 +100,7 @@ export const inputProps = [
     )
   },
   {
-    name: <InternalLink text="inputWidth" href="#inputWidth" />,
+    name: <StyledLink text="inputWidth" href="#inputWidth" />,
     types: ['string'],
     notes: (
       <div>Control the width of the actual input tag within the Input component
@@ -102,7 +117,7 @@ export const inputProps = [
     )
   },
   {
-    name: <InternalLink text="label" href="#label" />,
+    name: <StyledLink text="label" href="#label" />,
     types: ['string', 'node'],
     notes: 'The fact that label can be a node means translation is possible',
     examples: (
@@ -113,21 +128,21 @@ export const inputProps = [
     )
   },
   {
-    name: <InternalLink text="labelBlockOnTop" href="#labelBlockOnTop" />,
+    name: <StyledLink text="labelBlockOnTop" href="#labelBlockOnTop" />,
     types: ['boolean']
   },
   {
-    name: <InternalLink text="placeholder" href="#placeholder" />,
+    name: <StyledLink text="placeholder" href="#placeholder" />,
     types: ['string'],
     notes: 'Cannot be anything other than a string. For translations use "injectIntl"'
   },
   {
-    name: <InternalLink text="required" href="#required" />,
+    name: <StyledLink text="required" href="#required" />,
     types: ['boolean'],
     notes: 'Shows a red * by the label to indicate that the field must be... filled'
   },
   {
-    name: <InternalLink text="style" href="#style" />,
+    name: <StyledLink text="style" href="#style" />,
     types: ['object'],
     notes: (
       <div>
@@ -147,7 +162,7 @@ export const inputProps = [
     )
   },
   {
-    name: <InternalLink text="toolTip" href="#toolTip" />,
+    name: <StyledLink text="toolTip" href="#toolTip" />,
     types: ['string', 'node'],
     notes: (
       <div>
@@ -187,7 +202,7 @@ export const inputProps = [
     )
   },
   {
-    name: <InternalLink text="validation" href="#validation" />,
+    name: <StyledLink text="validation" href="#validation" />,
     types: ['function'],
     notes: <span>Receives the input field's value and must return <b>true</b> when the value is <b>not</b> valid</span>,
     examples: (
