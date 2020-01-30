@@ -9376,7 +9376,356 @@ var InputExamples = function InputExamples() {
 
 var _default = InputExamples;
 exports.default = _default;
-},{"react":"n8MK","../../actualLibrary":"tQm2","./themes":"I7D0","./nonShipped":"JAGQ","../propTypes":"D9iF"}],"Sz1i":[function(require,module,exports) {
+},{"react":"n8MK","../../actualLibrary":"tQm2","./themes":"I7D0","./nonShipped":"JAGQ","../propTypes":"D9iF"}],"Acwo":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NAME = exports.CITY = exports.SET_NEW_FIELD_VALUE = exports.TOGGLE_VALID = void 0;
+var TOGGLE_VALID = 'toggleValidField';
+exports.TOGGLE_VALID = TOGGLE_VALID;
+var SET_NEW_FIELD_VALUE = 'setNewFieldValue';
+exports.SET_NEW_FIELD_VALUE = SET_NEW_FIELD_VALUE;
+var CITY = 'CITY';
+exports.CITY = CITY;
+var NAME = 'NAME';
+exports.NAME = NAME;
+},{}],"bGFI":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.initialState = void 0;
+
+var _constants = require("./constants");
+
+var _initialState;
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var initialState = (_initialState = {}, _defineProperty(_initialState, _constants.CITY, {
+  value: '',
+  isValid: true
+}), _defineProperty(_initialState, _constants.NAME, {
+  value: '',
+  isValid: true
+}), _initialState);
+exports.initialState = initialState;
+
+var fieldReducer = function fieldReducer(state, action) {
+  switch (action.type) {
+    case _constants.SET_NEW_FIELD_VALUE:
+      return _objectSpread({}, state, {
+        value: action.inputValue
+      });
+
+    case _constants.TOGGLE_VALID:
+      return _objectSpread({}, state, {
+        isValid: !state.isValid
+      });
+
+    default:
+      return state;
+  }
+};
+
+var formReducer = function formReducer(state, action) {
+  switch (action.type) {
+    case _constants.SET_NEW_FIELD_VALUE:
+    case _constants.TOGGLE_VALID:
+      return _objectSpread({}, state, _defineProperty({}, action.field, fieldReducer(state[action.field], action)));
+
+    default:
+      return state;
+  }
+};
+
+var _default = formReducer;
+exports.default = _default;
+},{"./constants":"Acwo"}],"vEEZ":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.toggleValidField = exports.newFieldValue = void 0;
+
+var _constants = require("./constants");
+
+/* eslint-disable sort-keys */
+var newFieldValue = function newFieldValue(field, inputValue) {
+  return {
+    type: _constants.SET_NEW_FIELD_VALUE,
+    field: field,
+    inputValue: inputValue
+  };
+};
+
+exports.newFieldValue = newFieldValue;
+
+var toggleValidField = function toggleValidField(field) {
+  return {
+    type: _constants.TOGGLE_VALID,
+    field: field
+  };
+};
+
+exports.toggleValidField = toggleValidField;
+},{"./constants":"Acwo"}],"Zw8J":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.makeFieldChangeHandler = exports.makeHandleSubmit = void 0;
+
+var _actions = require("./actions");
+
+var makeHandleSubmit = function makeHandleSubmit(state, parentDispatch) {
+  return function () {
+    // No further validation here, submit can only be called when the form is valid
+    if (parentDispatch) {
+      // eslint-disable-next-line sort-keys
+      parentDispatch({
+        type: 'exposeState',
+        state: state
+      });
+    }
+
+    console.log('Valid form: ', state);
+  };
+};
+
+exports.makeHandleSubmit = makeHandleSubmit;
+
+var makeFieldChangeHandler = function makeFieldChangeHandler(field, dispatch) {
+  return function (e) {
+    e.preventDefault();
+    dispatch((0, _actions.newFieldValue)(field, e.target.value));
+  };
+};
+
+exports.makeFieldChangeHandler = makeFieldChangeHandler;
+},{"./actions":"vEEZ"}],"IM0B":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.makeNameValidator = exports.makeCityValidator = exports.isValidForm = void 0;
+
+var _constants = require("./constants");
+
+var _actions = require("./actions");
+
+var isValidForm = function isValidForm(state) {
+  var fields = Object.keys(state);
+
+  for (var i = 0; i < fields.length; i++) {
+    var field = state[fields[i]];
+
+    if (!field.isValid) {
+      console.log('Invalid form: ', state);
+      return false;
+    }
+  }
+
+  return true;
+}; // Unlike for changeHandlers, these should be unique enough that
+// it wouldn't make sense to get clever about ways to stay DRY
+
+
+exports.isValidForm = isValidForm;
+
+var makeCityValidator = function makeCityValidator(state, dispatch) {
+  return function (inputValue) {
+    // handle invalid values
+    if (inputValue === 'LOL') {
+      dispatch((0, _actions.toggleValidField)(_constants.CITY));
+      return true;
+    } // reset for valid values
+
+
+    if (!state[_constants.CITY].isValid) {
+      dispatch((0, _actions.toggleValidField)(_constants.CITY));
+      return false;
+    }
+  };
+};
+
+exports.makeCityValidator = makeCityValidator;
+
+var makeNameValidator = function makeNameValidator(state, dispatch) {
+  return function (inputValue) {
+    // handle invalid values
+    if (inputValue === 'NOPE') {
+      dispatch((0, _actions.toggleValidField)(_constants.NAME));
+      return true;
+    } // reset for valid values
+
+
+    if (!state[_constants.NAME].isValid) {
+      dispatch((0, _actions.toggleValidField)(_constants.NAME));
+      return false;
+    }
+  };
+};
+
+exports.makeNameValidator = makeNameValidator;
+},{"./constants":"Acwo","./actions":"vEEZ"}],"oB3j":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.capFirst = void 0;
+
+var capFirst = function capFirst(str) {
+  return str[0].toUpperCase() + str.toLowerCase().slice(1);
+};
+
+exports.capFirst = capFirst;
+},{}],"Iw7T":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+// eslint-disable-next-line react/prop-types
+var Input = function Input(_ref) {
+  var id = _ref.id,
+      onChange = _ref.onChange,
+      validation = _ref.validation,
+      label = _ref.label,
+      errorMsg = _ref.errorMsg;
+
+  var _useState = (0, _react.useState)(''),
+      _useState2 = _slicedToArray(_useState, 2),
+      text = _useState2[0],
+      changeText = _useState2[1];
+
+  var _useState3 = (0, _react.useState)(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      error = _useState4[0],
+      setError = _useState4[1];
+
+  var handleChange = function handleChange(e) {
+    e.preventDefault();
+    var val = e.target.value;
+    changeText(val);
+    setError(validation(val));
+    onChange(e);
+  };
+
+  return _react.default.createElement("div", null, label && _react.default.createElement("label", {
+    htmlFor: id
+  }, label), _react.default.createElement("input", {
+    id: id,
+    value: text,
+    onChange: handleChange
+  }), error ? errorMsg || 'Invalid input' : null);
+};
+
+var _default = Input;
+exports.default = _default;
+},{"react":"n8MK"}],"kbue":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _reducer = _interopRequireWildcard(require("./reducer"));
+
+var _handlers = require("./handlers");
+
+var _validators = require("./validators");
+
+var _constants = require("./constants");
+
+var _utils = require("./utils");
+
+var _Input = _interopRequireDefault(require("./Input"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+// eslint-disable-next-line react/prop-types
+function App(_ref) {
+  var parentDispatch = _ref.parentDispatch;
+
+  var _useReducer = (0, _react.useReducer)(_reducer.default, _reducer.initialState),
+      _useReducer2 = _slicedToArray(_useReducer, 2),
+      state = _useReducer2[0],
+      dispatch = _useReducer2[1];
+
+  var handleSubmit = (0, _handlers.makeHandleSubmit)(state, parentDispatch);
+  var handleCityChange = (0, _handlers.makeFieldChangeHandler)(_constants.CITY, dispatch);
+  var handleNameChange = (0, _handlers.makeFieldChangeHandler)(_constants.NAME, dispatch);
+  var canSubmit = (0, _validators.isValidForm)(state);
+  var cityValidation = (0, _validators.makeCityValidator)(state, dispatch);
+  var nameValidation = (0, _validators.makeNameValidator)(state, dispatch);
+  var cFcity = (0, _utils.capFirst)(_constants.CITY);
+  var cFname = (0, _utils.capFirst)(_constants.NAME);
+  return _react.default.createElement("div", {
+    className: "App"
+  }, _react.default.createElement("h1", null, "Formidable"), _react.default.createElement("p", null, "This is not a component meant to be part of the library. It is just an example to debate a thought."), _react.default.createElement("p", null, "It seems that now that we have ", _react.default.createElement("b", null, "hooks"), ", we could start thinking about project structures that fully embrace ", _react.default.createElement("b", null, "composition"), "."), _react.default.createElement("p", null, "It seems like separation of concern could be pushed to the extreme and for the best. There would still be one single parent reducer for the app, but each element making up the app could be ", _react.default.createElement("em", null, "responsible for its own state and exposing it"), " to its parents/consumers/subscribers."), _react.default.createElement("p", null, "It wouldn't be a lot unlike render prop, and state that has been ", _react.default.createElement("b", null, "lifted up"), " would be easy to ", _react.default.createElement("em", null, "track down"), ".", _react.default.createElement("br", null), "Most importantly, there would be a more direct correlation between what we ", _react.default.createElement("b", null, "see"), " in the UI and where to look in the codebase."), _react.default.createElement("p", null, "This would effectively be a collection of tiny apps glued together. Each with their own very familiar structure:"), _react.default.createElement("pre", null, "\n        Thing\n          |_actions\n          |_constants\n          |_handlers\n          |_index\n          |_Components\n              |_Button\n              |_Input\n          |_reducer\n          |_utils\n          |_validation\n      "), _react.default.createElement("p", null, "A form is the perfect example to illustrate this.", _react.default.createElement("br", null), "The sole purpose of a form is to collect user inputs. The whole nudging into providing valid information thing could be entirely isolated.", _react.default.createElement("br", null), "All the app cares about is the outcome, the input values at submit time.", _react.default.createElement("br", null), "The form below is a component that only takes in 1 prop: a dispatch function from its parent's store. The mean to expose its state onSumit."), _react.default.createElement("fieldset", null, _react.default.createElement("legend", null, "\xA0Inspect code for this to be slightly less underwhelming\xA0"), _react.default.createElement(_Input.default, {
+    label: "".concat(cFcity, ":"),
+    id: _constants.CITY,
+    validation: cityValidation,
+    errorMsg: "This city aint real brah!",
+    onChange: handleCityChange
+  }), _react.default.createElement(_Input.default, {
+    label: "".concat(cFname, ":"),
+    id: _constants.NAME,
+    validation: nameValidation,
+    errorMsg: "This name is funky...",
+    onChange: handleNameChange
+  }), _react.default.createElement("button", {
+    onClick: handleSubmit,
+    disabled: !canSubmit
+  }, "Ok")), !canSubmit && _react.default.createElement("div", null, _react.default.createElement("pre", null, cFcity, ": ", JSON.stringify(state[_constants.CITY], null, 2)), _react.default.createElement("pre", null, cFname, ": ", JSON.stringify(state[_constants.NAME], null, 2))));
+}
+
+var _default = App;
+exports.default = _default;
+},{"react":"n8MK","./reducer":"bGFI","./handlers":"Zw8J","./validators":"IM0B","./constants":"Acwo","./utils":"oB3j","./Input":"Iw7T"}],"Sz1i":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9394,11 +9743,15 @@ var _Default = _interopRequireDefault(require("./Default"));
 
 var _InputExamples = _interopRequireDefault(require("./InputExamples"));
 
+var _Form = _interopRequireDefault(require("../Form"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
@@ -9441,6 +9794,10 @@ var App = function App() {
     return theme.name === 'pink' ? setTheme(_themes.blue) : setTheme(_themes.pink);
   };
 
+  var dispatch = function dispatch(action) {
+    return console.log('Not a real thing. Just making a point.', action.state);
+  };
+
   return _react.default.createElement(_themes.default.Provider, {
     value: theme.value
   }, _react.default.createElement(_reactRouterDom.BrowserRouter, {
@@ -9458,7 +9815,11 @@ var App = function App() {
     to: "/input",
     style: linkStyle(theme.value),
     activeStyle: activeStyle
-  }, "Input")), _react.default.createElement("h1", null, "Dummies"), _react.default.createElement("h2", {
+  }, "Input"), _react.default.createElement(_reactRouterDom.NavLink, {
+    to: "/form",
+    style: linkStyle(theme.value),
+    activeStyle: activeStyle
+  }, "Form")), _react.default.createElement("h1", null, "Dummies"), _react.default.createElement("h2", {
     style: {
       marginBottom: '5rem'
     }
@@ -9469,12 +9830,19 @@ var App = function App() {
   }), _react.default.createElement(_reactRouterDom.Route, {
     path: "/input",
     component: _InputExamples.default
+  }), _react.default.createElement(_reactRouterDom.Route, {
+    path: "/form",
+    render: function render(props) {
+      return _react.default.createElement(_Form.default, _extends({}, props, {
+        parentDispatch: dispatch
+      }));
+    }
   }))));
 };
 
 var _default = App;
 exports.default = _default;
-},{"react":"n8MK","react-router-dom":"uc19","./themes":"I7D0","./Default":"l9Zi","./InputExamples":"JQhx"}],"Focm":[function(require,module,exports) {
+},{"react":"n8MK","react-router-dom":"uc19","./themes":"I7D0","./Default":"l9Zi","./InputExamples":"JQhx","../Form":"kbue"}],"Focm":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -9493,4 +9861,4 @@ if (module.hot) {
   module.hot.accept();
 }
 },{"react":"n8MK","react-dom":"NKHc","./App":"Sz1i"}]},{},["Focm"], null)
-//# sourceMappingURL=usageExamples.df00c28f.js.map
+//# sourceMappingURL=usageExamples.d49decbd.js.map
